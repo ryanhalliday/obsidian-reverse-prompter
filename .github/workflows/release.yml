@@ -28,7 +28,12 @@ jobs:
         run: |
           tag="${GITHUB_REF#refs/tags/}"
 
+          mkdir ${{ github.event.repository.name }}/
+          cp -t ${{ github.event.repository.name }}/ main.js manifest.json styles.css
+          zip -r "${{ github.event.repository.name }}-$tag.zip" ${{ github.event.repository.name }}/
+          
           gh release create "$tag" \
             --title="$tag" \
             --draft \
-            main.js manifest.json styles.css
+            main.js manifest.json styles.css \
+            "${{ github.event.repository.name }}-$tag.zip"
