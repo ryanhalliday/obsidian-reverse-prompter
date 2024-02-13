@@ -16,6 +16,7 @@ If you're stuck and don't know what to write about, this plugin can act as an in
 - Copy the plugin folder to that folder
 - Enable the plugin
 - Reload Obsidian
+- Get an [OpenAI API Key](https://platform.openai.com/api-keys) and put it into the settings.
 
 ## Usage
 

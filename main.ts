@@ -200,6 +200,8 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				})
 				textArea.inputEl.rows = 10;
+				textArea.inputEl.style.minWidth = "300px";
+				textArea.inputEl.style.width = "100%";
 			});
 		
 		new Setting(containerEl)
