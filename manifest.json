@@ -1,0 +1,11 @@
+{
+	"id": "reverse-prompter",
+	"name": "Reverse Prompter",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Generate prompts for you to beat writers block with AI",
+	"author": "Ryan Halliday",
+	"authorUrl": "https://blog.ryanhalliday.com",
+	"fundingUrl": "https://ko-fi.com/ryanhalliday",
+	"isDesktopOnly": false
+}
