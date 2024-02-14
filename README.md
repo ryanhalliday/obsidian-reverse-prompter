@@ -8,6 +8,8 @@ Reverse Prompter is an Obsidian plugin that helps you overcome writer's block by
 
 If you're stuck and don't know what to write about, this plugin can act as an interested reader and ask questions about your writing.
 
+When you click the icon or run the command to generate a reverse prompt, it takes either your selection or the content from your cursor until the last break (header or horizontal line) and sends them to ChatGPT to ask for a writing prompt.
+
 ## Installation
 
 - Download the [latest release](https://github.com/ryanhalliday/obsidian-reverse-prompter/releases)
