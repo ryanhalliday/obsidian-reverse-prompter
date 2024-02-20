@@ -117,17 +117,32 @@ export default class ReversePrompter extends Plugin {
 		const iterator = await this.requestReversePrompt(text);
 		if (!iterator) return;
 
+		if (editor.somethingSelected()){
+			const end = editor.listSelections().reduce((acc, selection) => {
+				return Math.max(acc, Math.max(selection.anchor.line, selection.head.line));
+			}, editor.getCursor().line);
+
+			editor.setCursor(end, 0)
+		}
+
+		const currentLine = editor.getCursor().line;
+		const currentLineContent = editor.getLine(currentLine);
+
 		// Ensure we are on an empty line
-		if (editor.getLine(editor.getCursor().line) != ""){
+		if (currentLineContent != ""){
+			// Shift to the end of the line and add a new line
+			editor.setCursor(currentLine, currentLineContent.length);
 			editor.replaceSelection('\n');
 		}
 
 		editor.replaceSelection(this.settings.prefix);
 
+		let response = '';
 		for await (const chunk of iterator){
-			console.log(chunk);
 			editor.replaceSelection(chunk);
+			response += chunk;
 		}
+		console.log("OpenAI Response: ", response);
 
 		editor.replaceSelection(this.settings.postfix);
 	}
