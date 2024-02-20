@@ -43,7 +43,7 @@ export default class ReversePrompter extends Plugin {
 				}
 			}
 		}).filter(m => m !== undefined).reverse();
-		
+
 		for (const match of invertedMatchIndexes) {
 			if (match === undefined) continue;
 
@@ -58,7 +58,8 @@ export default class ReversePrompter extends Plugin {
 			}
 		}
 
-		return '';
+		// no match found so go till top of doc
+		return editor.getValue().substring(0, cursorOffset);
 	}
 
 	getText(editor: Editor){
