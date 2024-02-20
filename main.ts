@@ -1,11 +1,15 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import OpenAI from 'openai';
 
+const OpenAIModels = ["gpt-4-turbo-preview", "gpt-4", "gpt-4-32k", "gpt-3.5-turbo"] as const; 
+type OpenAIModel = typeof OpenAIModels[number]; 
+
 interface ReversePrompterSettings {
 	openAIApiKey: string;
 	prompt: string;
 	prefix: string;
 	postfix: string;
+	model: OpenAIModel;
 }
 
 const DEFAULT_PROMPT = "You are a writing assistant. " + 
@@ -21,6 +25,7 @@ const DEFAULT_SETTINGS: ReversePrompterSettings = {
 	prompt: DEFAULT_PROMPT,
 	prefix: '> ',
 	postfix: '\n',
+	model: 'gpt-4'
 }
 
 export default class ReversePrompter extends Plugin {
@@ -98,7 +103,7 @@ export default class ReversePrompter extends Plugin {
 				{ role: 'system', content: this.settings.prompt },
 				{ role: 'user', content: text }
 			],
-			model: 'gpt-3.5-turbo',
+			model: this.settings.model,
 			stream: true
 		});
 
@@ -205,6 +210,20 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 		
+		new Setting(containerEl)
+			.setName('Model')
+			.setDesc('OpenAI model to use for reverse prompt generation')
+			.addDropdown(dropdown => {
+				OpenAIModels.forEach(model => {
+					dropdown.addOption(model, model);
+				});
+				dropdown.setValue(this.plugin.settings.model);
+				dropdown.onChange(async (value) => {
+					this.plugin.settings.model = value as OpenAIModel;
+					await this.plugin.saveSettings();
+				});
+			});
+
 		new Setting(containerEl)
 			.setName("Prompt")
 			.setDesc("Prompt for the reverse prompt")
