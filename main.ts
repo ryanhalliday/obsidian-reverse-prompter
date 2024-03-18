@@ -17,13 +17,12 @@ const DEFAULT_PROMPT = "You are a writing assistant. " +
 "Infer the type of writing from the user's input and ask insightful questions to help the user write more. " +
 "Your questions should be open-ended and encourage the user to think creatively. " +
 "Focus your questions on helping the writer keep moving quickly through and prevent writers block. " +
-"Write nothing other than one question. " + 
-"Example: What is the main character's motivation?"
+"Write nothing other than one question. "
 
 const DEFAULT_SETTINGS: ReversePrompterSettings = {
 	openAIApiKey: '',
 	prompt: DEFAULT_PROMPT,
-	prefix: '> ',
+	prefix: '> AI: ',
 	postfix: '\n',
 	model: 'gpt-4'
 }
