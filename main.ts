@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, Editor, MarkdownView, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import OpenAI from 'openai';
 
 const OpenAIModels = ["gpt-4-turbo-preview", "gpt-4", "gpt-4-32k", "gpt-3.5-turbo"] as const; 
@@ -30,7 +30,7 @@ const DEFAULT_SETTINGS: ReversePrompterSettings = {
 export default class ReversePrompter extends Plugin {
 	settings: ReversePrompterSettings;
 
-	dividerRegex: RegExp = /^(#+)|(-{3,})/gim;
+	dividerRegex = /^(#+)|(-{3,})/gim;
 
 	inProgress = false;
 
@@ -58,7 +58,7 @@ export default class ReversePrompter extends Plugin {
 			const startPos = editor.offsetToPos(match.index + match.match.length);
 			const checkContent = editor.getRange(startPos, cursorPos);
 			if (checkContent.trim().length > 0) {
-				return editor.getRange(editor.offsetToPos(match.index), cursorPos);;
+				return editor.getRange(editor.offsetToPos(match.index), cursorPos);
 			}
 		}
 
@@ -107,7 +107,7 @@ export default class ReversePrompter extends Plugin {
 		});
 
 		for await (const chunk of chatStream) {
-			let data = chunk.choices[0]?.delta?.content || ''
+			const data = chunk.choices[0]?.delta?.content || ''
 			yield data;
 		}
 
