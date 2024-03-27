@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, ButtonComponent, Editor, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, TextAreaComponent } from 'obsidian';
 import OpenAI from 'openai';
 
 const OpenAIModels = ["gpt-4-turbo-preview", "gpt-4", "gpt-4-32k", "gpt-3.5-turbo"] as const; 
@@ -11,6 +11,7 @@ interface ReversePrompterSettings {
 	postfix: string;
 	model: OpenAIModel;
 	includePath: boolean;
+	regex: string;
 }
 
 const DEFAULT_PROMPT = "You are a writing assistant. Your role is to help a user write. \n" + 
@@ -28,19 +29,19 @@ const DEFAULT_SETTINGS: ReversePrompterSettings = {
 	postfix: '\n',
 	model: 'gpt-4',
 	includePath: true,
+	regex: "^(#+)|(-{3,})"
 }
 
 export default class ReversePrompter extends Plugin {
 	settings: ReversePrompterSettings;
-
-	dividerRegex = /^(#+)|(-{3,})/gim;
 
 	inProgress = false;
 
 	getContentTillLastHeading(editor: Editor, cursorPos: CodeMirror.Position): string {
 		const cursorOffset = editor.posToOffset(cursorPos);
 
-		const matches = editor.getValue().matchAll(this.dividerRegex);
+		const re = new RegExp(this.settings.regex, 'gim');
+		const matches = editor.getValue().matchAll(re);
 
 		const invertedMatchIndexes = Array.from(matches, (match) => {
 			if (match.index !== undefined) {
@@ -199,20 +200,64 @@ export default class ReversePrompter extends Plugin {
 	}
 }
 
+type SettingsMap = {
+	[key: string]: Setting;
+}
+
 class ReversePrompterSettingsTab extends PluginSettingTab {
 	plugin: ReversePrompter;
+	settings: SettingsMap = {};
 
 	constructor(app: App, plugin: ReversePrompter) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
 
-	display(): void {
-		const {containerEl} = this;
-
-		containerEl.empty();
+	applyTextWithResetStyle(setting: Setting){
+		setting.controlEl.style.flexWrap = "wrap";
 		
-		new Setting(containerEl)
+		setting.components.forEach(c => {
+			if ('inputEl' in c){
+				(c as TextAreaComponent).inputEl.style.width = "100%";
+			} else if ('buttonEl' in c){
+				(c as ButtonComponent).buttonEl.style.display = "block";
+				(c as ButtonComponent).buttonEl.style.width = "100%";
+			}
+		});
+	}
+
+	configureResetButton(button: ButtonComponent, settingKey: string, completeCallback: () => void){
+		button.setButtonText("Reset")
+		button.onClick(async () => {
+			// @ts-ignore Could fix this or move on with life.
+			const defaultSettingValue = DEFAULT_SETTINGS[settingKey];
+
+			// Update text input, does not trigger onChange
+			const input: TextAreaComponent[] = this.settings[settingKey].components.filter(c => 'inputEl' in c) as TextAreaComponent[]
+			if (input.length > 0){
+				input[0].setValue(defaultSettingValue);
+			}
+
+			// @ts-ignore Could fix this or move on with life.
+			this.plugin.settings[settingKey] = defaultSettingValue;
+
+			await this.plugin.saveSettings();
+
+			completeCallback();
+		})
+	}
+
+	addSetting(key: string): Setting {
+		const setting = new Setting(this.containerEl)
+		this.settings[key] = setting;
+		return setting;
+	}
+
+	display(): void {
+		this.containerEl.empty();
+
+		
+		this.addSetting('openAIApiKey')
 			.setName('OpenAI Api Key')
 			.setDesc('Enter your OpenAI API Key')
 			.addText(text => text
@@ -223,7 +268,7 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 		
-		new Setting(containerEl)
+		this.addSetting('model')
 			.setName('Model')
 			.setDesc('OpenAI model to use for reverse prompt generation')
 			.addDropdown(dropdown => {
@@ -237,7 +282,7 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 				});
 			});
 
-		new Setting(containerEl)
+		this.addSetting('prompt')
 			.setName("Prompt")
 			.setDesc("Prompt for the reverse prompt")
 			.addTextArea(textArea => {
@@ -249,25 +294,68 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 				})
 				textArea.inputEl.rows = 10;
 				textArea.inputEl.style.minWidth = "300px";
-				textArea.inputEl.style.width = "100%";
+			})
+			.addButton(button => {
+				this.configureResetButton(button, 'prompt', () => {
+					new Notice("Prompt reset to default");
+				});
 			});
 		
-		new Setting(containerEl)
+		this.addSetting('includePath')
+			.setName('Include file path')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.includePath)
+				.onChange(async (value) => {
+					this.plugin.settings.includePath = value;
+					await this.plugin.saveSettings();
+				}));
+		
+		this.addSetting('prefix')
 			.setName('AI Response Prefix')
 			.addTextArea(text => text
 				.setValue(this.plugin.settings.prefix)
 				.onChange(async (value) => {
 					this.plugin.settings.prefix = value;
 					await this.plugin.saveSettings();
-				}));
+				}))
+				.addButton(button => {
+					this.configureResetButton(button, 'prefix', () => {
+						new Notice("Prefix reset to default");
+					});
+				});
 		
-		new Setting(containerEl)
+		this.addSetting('postfix')
 			.setName('AI Response Postfix')
 			.addTextArea(text => text
 				.setValue(this.plugin.settings.postfix)
 				.onChange(async (value) => {
 					this.plugin.settings.postfix = value;
 					await this.plugin.saveSettings();
-				}));
+				}))
+				.addButton(button => {
+					this.configureResetButton(button, 'postfix', () => {
+						new Notice("Postfix reset to default");
+					});
+				});
+
+		this.addSetting('regex')
+			.setName('Divider regex')
+			.addTextArea(text => {
+				text.setValue(this.plugin.settings.regex)
+				text.onChange(async (value) => {
+					this.plugin.settings.regex = value;
+					await this.plugin.saveSettings();
+				})
+				text.inputEl.style.fontFamily = "monospace";
+			})
+			.addButton(button => {
+				this.configureResetButton(button, 'regex', () => {
+					new Notice("Regex reset to default");
+				});
+			});
+		
+		for (const key in this.settings){
+			this.applyTextWithResetStyle(this.settings[key]);
+		}
 	}
 }
