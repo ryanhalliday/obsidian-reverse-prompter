@@ -10,13 +10,15 @@ interface ReversePrompterSettings {
 	prefix: string;
 	postfix: string;
 	model: OpenAIModel;
+	includePath: boolean;
 }
 
-const DEFAULT_PROMPT = "You are a writing assistant. " + 
-"Your role is to help a user write. " +
-"Infer the type of writing from the user's input and ask insightful questions to help the user write more. " +
-"Your questions should be open-ended and encourage the user to think creatively. " +
-"Focus your questions on helping the writer keep moving quickly through and prevent writers block. " +
+const DEFAULT_PROMPT = "You are a writing assistant. Your role is to help a user write. \n" + 
+"Infer the type of writing from the user's input and ask insightful and interesting questions to help the user write more. \n" +
+"Your questions should be open-ended and encourage the user to think creatively. \n" +
+"Focus your questions on helping the writer keep moving quickly through and prevent writers block. \n" +
+"The user may provide you with the document file path. \n" +
+"If you see other AI questions, ensure your questions are different. \n" +
 "Write nothing other than one question. "
 
 const DEFAULT_SETTINGS: ReversePrompterSettings = {
@@ -24,7 +26,8 @@ const DEFAULT_SETTINGS: ReversePrompterSettings = {
 	prompt: DEFAULT_PROMPT,
 	prefix: '> AI: ',
 	postfix: '\n',
-	model: 'gpt-4'
+	model: 'gpt-4',
+	includePath: true,
 }
 
 export default class ReversePrompter extends Plugin {
@@ -66,12 +69,23 @@ export default class ReversePrompter extends Plugin {
 		return editor.getValue().substring(0, cursorOffset);
 	}
 
-	getText(editor: Editor){
-		if (editor.somethingSelected()){
-			return editor.getSelection();
-		} else {
-			return this.getContentTillLastHeading(editor, editor.getCursor());
+	getText(view: MarkdownView, editor: Editor){
+		let txt = "";
+
+		if (this.settings.includePath){
+			const title = view.file?.path;
+			if (title){
+				txt += `File: ${title}\n`
+			}
 		}
+
+		if (editor.somethingSelected()){
+			txt += editor.getSelection();
+		} else {
+			txt += this.getContentTillLastHeading(editor, editor.getCursor());
+		}
+
+		return txt
 	}
 
 	async *requestReversePrompt(text: string) {
@@ -114,9 +128,9 @@ export default class ReversePrompter extends Plugin {
 		this.inProgress = false;
 	}
 
-	async generateReversePrompt(editor: Editor){
-		const text = this.getText(editor);
-		console.log("Sending text to OpenAI: ", text);
+	async generateReversePrompt(view: MarkdownView, editor: Editor){
+		const text = this.getText(view, editor);
+		console.log("Sending text to OpenAI:\n" + text);
 
 		const iterator = await this.requestReversePrompt(text);
 		if (!iterator) return;
@@ -157,7 +171,7 @@ export default class ReversePrompter extends Plugin {
 		this.addRibbonIcon('step-forward', 'Generate Reverse Prompt', async (evt: MouseEvent) => {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
-				await this.generateReversePrompt(view.editor);
+				await this.generateReversePrompt(view, view.editor);
 			}
 		});
 
@@ -165,7 +179,7 @@ export default class ReversePrompter extends Plugin {
 			id: 'reverse-prompt-command',
 			name: 'Generate Reverse Prompt',
 			editorCallback: async (editor: Editor, view: MarkdownView) => {
-				await this.generateReversePrompt(editor);
+				await this.generateReversePrompt(view, editor);
 			}
 		});
 
