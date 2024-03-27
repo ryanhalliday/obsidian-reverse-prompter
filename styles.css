@@ -6,3 +6,24 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+#reverse-prompter-settings .setting-item-control {
+	flex-wrap: wrap;
+}
+
+#reverse-prompter-settings .setting-item-control textarea {
+	width: 100%;
+}
+
+#reverse-prompter-settings .setting-item-control button {
+	display: block;
+	width: 100%;
+}
+
+#reverse-prompter-settings #reverse-prompter-prompt {
+	min-width: 300px;
+}
+
+#reverse-prompter-settings #reverse-prompter-regex { 
+	font-family: monospace;
+}

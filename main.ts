@@ -211,19 +211,7 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 	constructor(app: App, plugin: ReversePrompter) {
 		super(app, plugin);
 		this.plugin = plugin;
-	}
-
-	applyTextWithResetStyle(setting: Setting){
-		setting.controlEl.style.flexWrap = "wrap";
-		
-		setting.components.forEach(c => {
-			if ('inputEl' in c){
-				(c as TextAreaComponent).inputEl.style.width = "100%";
-			} else if ('buttonEl' in c){
-				(c as ButtonComponent).buttonEl.style.display = "block";
-				(c as ButtonComponent).buttonEl.style.width = "100%";
-			}
-		});
+		this.containerEl.id = 'reverse-prompter-settings';
 	}
 
 	configureResetButton(button: ButtonComponent, settingKey: string, completeCallback: () => void){
@@ -286,6 +274,7 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 			.setName("Prompt")
 			.setDesc("Prompt for the reverse prompt")
 			.addTextArea(textArea => {
+				textArea.inputEl.id = "reverse-prompter-prompt";
 				textArea.setPlaceholder("Enter the prompt")
 				textArea.setValue(this.plugin.settings.prompt)
 				textArea.onChange(async (value) => {
@@ -293,7 +282,6 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				})
 				textArea.inputEl.rows = 10;
-				textArea.inputEl.style.minWidth = "300px";
 			})
 			.addButton(button => {
 				this.configureResetButton(button, 'prompt', () => {
@@ -341,21 +329,17 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 		this.addSetting('regex')
 			.setName('Divider regex')
 			.addTextArea(text => {
+				text.inputEl.id = "reverse-prompter-regex";
 				text.setValue(this.plugin.settings.regex)
 				text.onChange(async (value) => {
 					this.plugin.settings.regex = value;
 					await this.plugin.saveSettings();
 				})
-				text.inputEl.style.fontFamily = "monospace";
 			})
 			.addButton(button => {
 				this.configureResetButton(button, 'regex', () => {
 					new Notice("Regex reset to default");
 				});
 			});
-		
-		for (const key in this.settings){
-			this.applyTextWithResetStyle(this.settings[key]);
-		}
 	}
 }
