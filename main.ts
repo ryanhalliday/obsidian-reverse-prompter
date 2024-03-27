@@ -258,10 +258,10 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 
 		
 		this.addSetting('openAIApiKey')
-			.setName('OpenAI Api Key')
-			.setDesc('Enter your OpenAI API Key')
+			.setName('OpenAI API key')
+			.setDesc('Enter your OpenAI API key')
 			.addText(text => text
-				.setPlaceholder('Enter your OpenAI API Key')
+				.setPlaceholder('Enter your OpenAI API key')
 				.setValue(this.plugin.settings.openAIApiKey)
 				.onChange(async (value) => {
 					this.plugin.settings.openAIApiKey = value;
@@ -311,7 +311,7 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 				}));
 		
 		this.addSetting('prefix')
-			.setName('AI Response Prefix')
+			.setName('AI response prefix')
 			.addTextArea(text => text
 				.setValue(this.plugin.settings.prefix)
 				.onChange(async (value) => {
@@ -325,7 +325,7 @@ class ReversePrompterSettingsTab extends PluginSettingTab {
 				});
 		
 		this.addSetting('postfix')
-			.setName('AI Response Postfix')
+			.setName('AI response postfix')
 			.addTextArea(text => text
 				.setValue(this.plugin.settings.postfix)
 				.onChange(async (value) => {
