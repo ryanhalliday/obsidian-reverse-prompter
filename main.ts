@@ -177,7 +177,7 @@ export default class ReversePrompter extends Plugin {
 		});
 
 		this.addCommand({
-			id: 'reverse-prompt-command',
+			id: 'reverse-prompt',
 			name: 'Generate Reverse Prompt',
 			editorCallback: async (editor: Editor, view: MarkdownView) => {
 				await this.generateReversePrompt(view, editor);
