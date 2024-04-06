@@ -131,7 +131,7 @@ export default class ReversePrompter extends Plugin {
 
 	async generateReversePrompt(view: MarkdownView, editor: Editor){
 		const text = this.getText(view, editor);
-		console.log("Sending text to OpenAI:\n" + text);
+		// console.log("Sending text to OpenAI:\n" + text);
 
 		const iterator = await this.requestReversePrompt(text);
 		if (!iterator) return;
@@ -156,12 +156,12 @@ export default class ReversePrompter extends Plugin {
 
 		editor.replaceSelection(this.settings.prefix);
 
-		let response = '';
+		// let response = '';
 		for await (const chunk of iterator){
 			editor.replaceSelection(chunk);
-			response += chunk;
+			// response += chunk;
 		}
-		console.log("OpenAI Response: ", response);
+		// console.log("OpenAI Response: ", response);
 
 		editor.replaceSelection(this.settings.postfix);
 	}
