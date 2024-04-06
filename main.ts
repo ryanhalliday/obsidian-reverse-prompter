@@ -169,7 +169,7 @@ export default class ReversePrompter extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.addRibbonIcon('step-forward', 'Generate Reverse Prompt', async (evt: MouseEvent) => {
+		this.addRibbonIcon('step-forward', 'Generate reverse prompt', async (evt: MouseEvent) => {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
 				await this.generateReversePrompt(view, view.editor);
@@ -178,7 +178,7 @@ export default class ReversePrompter extends Plugin {
 
 		this.addCommand({
 			id: 'reverse-prompt',
-			name: 'Generate Reverse Prompt',
+			name: 'Generate reverse prompt',
 			editorCallback: async (editor: Editor, view: MarkdownView) => {
 				await this.generateReversePrompt(view, editor);
 			}

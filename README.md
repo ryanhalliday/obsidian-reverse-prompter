@@ -22,7 +22,7 @@ When you click the icon or run the command to generate a reverse prompt, it take
 
 After installing the Reverse Prompter plugin, you can access it through the command palette or the plugin sidebar. 
 
-Simply click on the plugin's icon or the command "Generate Reverse Prompt".
+Simply click on the plugin's icon or the command "Generate reverse prompt".
 
 ## Support
 
