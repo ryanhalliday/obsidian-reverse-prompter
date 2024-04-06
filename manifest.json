@@ -1,7 +1,7 @@
 {
 	"id": "reverse-prompter",
 	"name": "Reverse Prompter",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"minAppVersion": "1.5.12",
 	"description": "Generate prompts to keep you writing with AI.",
 	"author": "Ryan Halliday",
