@@ -10,6 +10,12 @@ When you click the icon or run the command to generate a reverse prompt, it take
 
 ## Installation
 
+### Automatic
+
+You can install the latest release from the [Obsidian Community Plugins](https://help.obsidian.md/Extending+Obsidian/Community+plugins) screen in Obsidian or by [clicking here](https://obsidian.md/plugins?id=reverse-prompter)
+
+### Manual
+
 - Download the [latest release](https://github.com/ryanhalliday/obsidian-reverse-prompter/releases)
 - Extract the contents of the downloaded package to a local directory.
 - Open Obsidian > Settings > Community Plugins and then click the folder icon next to Installed Plugins
