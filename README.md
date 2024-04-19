@@ -2,7 +2,7 @@
 
 **In Obsidian, AI prompts you.**
 
-Reverse Prompter is an Obsidian plugin that helps you write by generating prompts using AI. 
+Reverse Prompter is an [Obsidian](https://obsidian.md/) plugin that helps you write by generating prompts using AI. 
 
 If you're stuck and don't know what to write about, this plugin can act as an interested reader and ask questions about your writing.
 
