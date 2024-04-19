@@ -12,7 +12,9 @@ When you click the icon or run the command to generate a reverse prompt, it take
 
 ### Automatic
 
-You can install the latest release from the [Obsidian Community Plugins](https://help.obsidian.md/Extending+Obsidian/Community+plugins) screen in Obsidian or by [clicking here](https://obsidian.md/plugins?id=reverse-prompter)
+You can install the latest release from [Obsidian Community Plugins](https://help.obsidian.md/Extending+Obsidian/Community+plugins) by searching for "Reverse Prompter" or by [clicking here](https://obsidian.md/plugins?id=reverse-prompter).
+
+To use the plugin you will need to get an [OpenAI API Key](https://platform.openai.com/api-keys) and put it into the settings.
 
 ### Manual
 
