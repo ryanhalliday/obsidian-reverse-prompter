@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-reverse-prompter",
-	"version": "1.0.6",
+	"version": "1.0.10",
 	"description": "Generate prompts for you to beat writers block with AI",
 	"main": "main.js",
 	"scripts": {
