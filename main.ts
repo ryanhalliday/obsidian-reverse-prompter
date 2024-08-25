@@ -1,7 +1,7 @@
 import { App, ButtonComponent, Editor, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, TextAreaComponent } from 'obsidian';
 import OpenAI from 'openai';
 
-const OpenAIModels = ["gpt-4-turbo-preview", "gpt-4", "gpt-4-32k", "gpt-3.5-turbo"] as const; 
+const OpenAIModels = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4-turbo-preview", "gpt-4", "gpt-4-32k", "gpt-3.5-turbo"] as const; 
 type OpenAIModel = typeof OpenAIModels[number]; 
 
 interface ReversePrompterSettings {
@@ -27,7 +27,7 @@ const DEFAULT_SETTINGS: ReversePrompterSettings = {
 	prompt: DEFAULT_PROMPT,
 	prefix: '> AI: ',
 	postfix: '\n',
-	model: 'gpt-4',
+	model: 'gpt-4o',
 	includePath: true,
 	regex: "^(#+)|(-{3,})"
 }
